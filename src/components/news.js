@@ -147,7 +147,6 @@ export default class News extends Component {
     }  
     constructor(){
       super();
-      // console.log("hello this is the constructor ");
       this.state = {
         articles: [],
         loading:false,
@@ -155,42 +154,36 @@ export default class News extends Component {
       }
     }
     componentDidMount = async () => {
-      // eslint-disable-next-line no-template-curly-in-string
       let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=bdcbde0a23a340aa83e3ba4f7c092422&pageSize=12`;
       let data= await fetch(url)
       let parseddata = await data.json();
       console.log(parseddata);
       this.setState({articles:parseddata.articles,totalResults:parseddata.totalResults})
     }
-
-    handleNextclick=async ()=>{
-      console.log("next");
-      if(!(this.state.page+1 > Math.ceil(this.state.totalResults/12))){
-        let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=bdcbde0a23a340aa83e3ba4f7c092422&page=${this.state.page+1}&pageSize=12`;
-        this.setState({loading:true});
-        let data= await fetch(url)
-        let parseddata = await data.json();
-        console.log(parseddata);
-        this.setState({
-          page:this.state.page+1,
-          articles:parseddata.articles,
-          loading:false
-        })
-      }
-    }
-
-    handlePrevclick=async ()=>{
-      console.log("prev");
-      let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=bdcbde0a23a340aa83e3ba4f7c092422&page=${this.state.page-1}&pageSize=12`;
+    updatenews=async ()=>{
+      let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=bdcbde0a23a340aa83e3ba4f7c092422&page=${this.state.page}&pageSize=12`;
       this.setState({loading:true});
       let data= await fetch(url)
       let parseddata = await data.json();
       console.log(parseddata);
       this.setState({
         articles:parseddata.articles,
-        page:this.state.page-1,
         loading:false
       })
+
+    }
+
+    handleNextclick=async ()=>{
+      console.log("next");
+      this.setState({page:this.state.page+1})
+      this.updatenews();
+
+    }
+
+    handlePrevclick=async ()=>{
+      console.log("prev");
+      this.setState({page:this.state.page-1})
+      this.updatenews();
     }
     
     render() { 
